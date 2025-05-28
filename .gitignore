@@ -10,3 +10,22 @@ __pycache__
 
 
 COMPLETION_REPORT.md
+PHASE_2_COMPLETE.md
+PHASE_2_COMPLETION_FINAL.md
+PHASE_2_IMPLEMENTATION_REPORT.md
+
+phase2_final_check.py
+
+docs
+*test*
+
+*phase1_foundation*
+*find_notebook_issues*
+*find_problem_cells*
+
+executed_01_foundations.ipynb
+
+output.txt
+
+*token_ledger*
+

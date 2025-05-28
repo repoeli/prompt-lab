@@ -4,6 +4,9 @@ Evaluation framework for prompt lab experiments.
 Provides standardized metrics and comparison tools.
 """
 
+# Version indicator to help with debugging
+FRAMEWORK_VERSION = "2.0-FIXED-KeyError-scores-response-length"
+
 import json
 import pandas as pd
 from datetime import datetime
@@ -123,10 +126,27 @@ class PromptEvaluator:
                 
             except Exception as e:
                 print(f"❌ Error in test case {i}: {e}")
-                continue
-        
-        # Convert to DataFrame for analysis
-        df = pd.DataFrame(self.results)
+                continue        # Convert to DataFrame for analysis
+        if self.results:
+            # Flatten the nested results structure for DataFrame
+            flattened_results = []
+            for result in self.results:
+                flat_result = {
+                    'timestamp': result.get('timestamp'),
+                    'prompt': result.get('prompt'),
+                    'response': result.get('response'),
+                    'expected': result.get('expected')
+                }
+                # Flatten scores
+                for score_key, score_value in result.get('scores', {}).items():
+                    flat_result[f'scores_{score_key}'] = score_value
+                # Flatten metadata
+                for meta_key, meta_value in result.get('metadata', {}).items():
+                    flat_result[f'metadata_{meta_key}'] = meta_value
+                flattened_results.append(flat_result)
+            df = pd.DataFrame(flattened_results)
+        else:
+            df = pd.DataFrame()
         return df
     
     def generate_report(self) -> Dict[str, Any]:
@@ -134,19 +154,20 @@ class PromptEvaluator:
         if not self.results:
             return {"error": "No results to analyze"}
         
-        df = pd.DataFrame(self.results)
+        # Extract scores directly from nested structure instead of relying on DataFrame columns
+        response_lengths = [r['scores'].get('response_length', 0) for r in self.results]
+        response_chars = [r['scores'].get('response_chars', 0) for r in self.results]
         
         report = {
             'evaluation_name': self.eval_name,
             'timestamp': datetime.now().isoformat(),
             'total_tests': len(self.results),
             'summary_stats': {
-                'avg_response_length': df['scores.response_length'].mean(),
-                'avg_response_chars': df['scores.response_chars'].mean(),
+                'avg_response_length': sum(response_lengths) / len(response_lengths) if response_lengths else 0,
+                'avg_response_chars': sum(response_chars) / len(response_chars) if response_chars else 0,
             },
             'cost_analysis': {},
-            'quality_metrics': {}
-        }
+            'quality_metrics': {}        }
         
         # Cost analysis if metadata available
         if any('cost_usd' in r.get('metadata', {}) for r in self.results):
@@ -159,11 +180,13 @@ class PromptEvaluator:
             }
         
         # Quality metrics if available
-        if 'scores.exact_match' in df.columns:
-            report['quality_metrics']['exact_match_rate'] = df['scores.exact_match'].mean()
+        exact_matches = [r['scores'].get('exact_match', False) for r in self.results if 'exact_match' in r['scores']]
+        if exact_matches:
+            report['quality_metrics']['exact_match_rate'] = sum(exact_matches) / len(exact_matches)
         
-        if 'scores.keyword_coverage' in df.columns:
-            report['quality_metrics']['avg_keyword_coverage'] = df['scores.keyword_coverage'].mean()
+        keyword_coverages = [r['scores'].get('keyword_coverage', 0) for r in self.results if 'keyword_coverage' in r['scores']]
+        if keyword_coverages:
+            report['quality_metrics']['avg_keyword_coverage'] = sum(keyword_coverages) / len(keyword_coverages)
         
         return report
     
@@ -181,10 +204,26 @@ class PromptEvaluator:
         report_file = self.output_dir / f"{self.eval_name}_{timestamp}_report.json"
         with open(report_file, 'w') as f:
             json.dump(report, f, indent=2)
-        
-        # Save CSV for analysis
+          # Save CSV for analysis
         if self.results:
-            df = pd.DataFrame(self.results)
+            # Flatten the nested results structure for CSV export
+            flattened_results = []
+            for result in self.results:
+                flat_result = {
+                    'timestamp': result.get('timestamp'),
+                    'prompt': result.get('prompt'),
+                    'response': result.get('response'),
+                    'expected': result.get('expected')
+                }
+                # Flatten scores
+                for score_key, score_value in result.get('scores', {}).items():
+                    flat_result[f'scores_{score_key}'] = score_value
+                # Flatten metadata
+                for meta_key, meta_value in result.get('metadata', {}).items():
+                    flat_result[f'metadata_{meta_key}'] = meta_value
+                flattened_results.append(flat_result)
+            
+            df = pd.DataFrame(flattened_results)
             csv_file = self.output_dir / f"{self.eval_name}_{timestamp}_data.csv"
             df.to_csv(csv_file, index=False)
         

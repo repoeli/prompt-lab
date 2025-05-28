@@ -28,6 +28,13 @@ requests==2.32.3
 click==8.1.8
 colorlog==6.9.0
 
+# Scientific Computing & Analysis (Phase 2 Dependencies)
+scipy==1.11.4
+scikit-learn==1.3.2
+seaborn==0.13.0
+plotly==5.17.0
+matplotlib==3.8.2
+
 # Optional: Advanced ML/AI tools (uncomment if needed)
 # dspy-ai==2.6.24
 # litellm==1.71.1
