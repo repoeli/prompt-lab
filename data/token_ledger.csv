@@ -1,0 +1,7 @@
+date,phase,model,tokens_in,tokens_out,cost_usd
+2023-10-01,Phase 1,AI Writing Coach,100,80,0.01
+2023-10-02,Phase 1,AI Writing Coach,150,120,0.015
+2023-10-03,Phase 1,AI Writing Coach,200,180,0.02
+2023-10-04,Phase 1,AI Writing Coach,250,230,0.025
+2023-10-05,Phase 1,AI Writing Coach,300,290,0.03
+2025-05-28 01:53:03,phase1,gpt-4o-mini,23,713,0.001725

@@ -94,3 +94,11 @@ def run_chat(
     except Exception as e:
         logger.error("OpenAI API call failed: %s", e, exc_info=True)
         raise
+
+# Convenience function for notebook use
+def run(model: str, messages: List[Dict[str, Any]], **kwargs: Any) -> str:
+    """
+    Simplified interface for notebook use.
+    Alias for run_chat with cleaner signature.
+    """
+    return run_chat(model, messages, **kwargs)
