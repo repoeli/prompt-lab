@@ -1,0 +1,34 @@
+# Core Dependencies - Pinned Versions for Reproducibility
+# Generated on 2025-05-28
+
+# OpenAI API
+openai==1.82.0
+
+# Environment Management
+python-dotenv==1.0.1
+
+# Data Handling
+pandas==2.2.3
+numpy==2.0.2
+
+# Jupyter/Notebook Support
+jupyter==1.1.1
+jupyterlab==4.2.0
+ipykernel==6.29.5
+ipython==8.18.1
+
+# Development & Testing
+pytest==8.3.4
+pytest-cov==6.0.0
+black==25.1.0
+flake8==7.1.1
+
+# Utility
+requests==2.32.3
+click==8.1.8
+colorlog==6.9.0
+
+# Optional: Advanced ML/AI tools (uncomment if needed)
+# dspy-ai==2.6.24
+# litellm==1.71.1
+# optuna==4.3.0

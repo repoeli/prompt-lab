@@ -7,3 +7,6 @@ venv.bat
 openai1.py
 
 __pycache__
+
+
+COMPLETION_REPORT.md
